@@ -1,0 +1,137 @@
+{
+  "name": "upload_youtube_navvukundam_raa",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        20
+      ],
+      "id": "0069e3c2-6a59-4884-a624-68e3d9514884",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1pCb_F-HWiA-PCMdRaAGhtQ8TfL9xNHNNd2y7wp1nrKg",
+          "mode": "list",
+          "cachedResultName": "navvukundamraa_yt_videos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pCb_F-HWiA-PCMdRaAGhtQ8TfL9xNHNNd2y7wp1nrKg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "main",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pCb_F-HWiA-PCMdRaAGhtQ8TfL9xNHNNd2y7wp1nrKg/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a46e2276-670c-4152-9331-7301aedee1e1",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YBrhf9hbzoUmSQhG",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json['video path'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        200,
+        40
+      ],
+      "id": "9bfd6d9e-ffed-4950-883b-bf0c0fddca41",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "upload",
+        "title": "={{ $json.title }}",
+        "regionCode": "IN",
+        "categoryId": "24",
+        "options": {
+          "description": "={{ $json.description }}",
+          "privacyStatus": "public"
+        }
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        500,
+        40
+      ],
+      "id": "5e3ed50f-436f-416d-b76c-1652402e1446",
+      "name": "YouTube2",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "9pfmTPK2TzotnTHU",
+          "name": "YouTube account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "YouTube2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9815d617-3e3c-40bd-b9c6-31e7b69f7381",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "13b539952c9719113db3ce29845755ab93f749a0d22811c6f27eb7e5aeee38da"
+  },
+  "id": "Yjc7tFYqDPlIZoHB",
+  "tags": []
+}
