@@ -1,0 +1,308 @@
+{
+  "name": "not tested - navvukundam raa _ php shared serer  database  to youtube",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a49bf778-9c20-4596-b5c9-5a5177dfba4e",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data.data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        440,
+        0
+      ],
+      "id": "ec485c37-b2a9-48ca-8fdf-9767e252d310",
+      "name": "vdeo array to video object"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.php_server_path }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        620,
+        -120
+      ],
+      "id": "5e436e8a-3ffc-4d2e-b474-d33a316f725f",
+      "name": "download the video at php server"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        840,
+        -140
+      ],
+      "id": "ac59ea73-bbe3-404b-8a2a-d0d7e3c483ed",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "upload",
+        "title": "={{ $json.title }}",
+        "regionCode": "IN",
+        "categoryId": "24",
+        "options": {
+          "description": "={{ $json.description }}",
+          "privacyStatus": "public"
+        }
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        -120
+      ],
+      "id": "180a1255-8359-483b-abe7-36885bc050f8",
+      "name": "YouTube upload",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "NzHZlGGDmQk1Fu2N",
+          "name": "tamil siripoda YouTube account  "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1180,
+        0
+      ],
+      "id": "2aba9155-2b95-417c-b256-0561a8909cbb",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "https://tawhid.in/tiny/videos/1000videos/video_meta_api.php",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "1"
+            },
+            {
+              "name": "youtube_url",
+              "value": "https://www.youtube.com/new_youtube_link_for_id_1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1380,
+        -20
+      ],
+      "id": "fe39d7ea-d29b-47da-8d58-d75da1f5d176",
+      "name": "update youtube url"
+    },
+    {
+      "parameters": {
+        "url": "https://tawhid.in/tiny/videos/1000videos/video_meta_api.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "channel_url",
+              "value": "https://www.youtube.com/@navvukundamraa"
+            },
+            {
+              "name": "limit",
+              "value": "5"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        40
+      ],
+      "id": "ccf41f29-d3b9-4a63-b587-227a645d1847",
+      "name": "get 5 by channel id"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "https://tawhid.in/tiny/videos/1000videos/video_meta_api.php",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "1"
+            },
+            {
+              "name": "youtube_url",
+              "value": "dadfada"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        380,
+        240
+      ],
+      "id": "873f501b-f7e5-4f47-ac2e-7a2b042c84c9",
+      "name": "test - update youtube url1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "get 5 by channel id",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "test - update youtube url1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "vdeo array to video object": {
+      "main": [
+        [
+          {
+            "node": "download the video at php server",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "download the video at php server": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "YouTube upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube upload": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "update youtube url",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get 5 by channel id": {
+      "main": [
+        [
+          {
+            "node": "vdeo array to video object",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "82e5f3b2-e56c-44b7-bba0-8cbbd32651ae",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "13b539952c9719113db3ce29845755ab93f749a0d22811c6f27eb7e5aeee38da"
+  },
+  "id": "ozgvRsESxz8OHIpO",
+  "tags": []
+}
