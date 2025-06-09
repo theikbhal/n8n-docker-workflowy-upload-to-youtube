@@ -1,0 +1,258 @@
+{
+  "name": "upload to youtube from json file",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "bc389501-66a0-4178-9a16-20bd0b970564",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://tawhid.in/tiny/videos/1000videos/day2/jokes.json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "74b15d55-e954-4d6e-81f1-499e976d318e",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items[0].json.jokes.map(joke => ({ json: joke }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "ff3c64fb-d0bb-42d5-8f9a-2f7f9ddf44a0",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "upload",
+        "title": "={{ $json.title }}",
+        "regionCode": "IN",
+        "categoryId": "24",
+        "options": {
+          "description": "={{ $json.description }}",
+          "privacyStatus": "private",
+          "publishAt": "2025-06-09T07:00:00"
+        }
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        980,
+        -160
+      ],
+      "id": "5a5614df-dcea-4805-9722-f9b454b709ae",
+      "name": "YouTube",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "9pfmTPK2TzotnTHU",
+          "name": "YouTube account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.php_server_path }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        580,
+        -140
+      ],
+      "id": "28d8dd29-4ce8-4ad0-b917-7536e02afa9d",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        800,
+        -160
+      ],
+      "id": "37519c1a-52f8-4030-bba1-c6977cd3c96b",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1240,
+        -120
+      ],
+      "id": "183c32c1-cbae-436e-b14c-e6dcb8ef363c",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// input: multiple items with JSON like the example\n\nconst jokes = items.map(item => {\n  const data = item.json;\n\n  // Add youtube_url from uploadId\n  data.youtube_url = `https://www.youtube.com/watch?v=${data.uploadId}`;\n\n  return data;\n});\n\n// Return wrapped in an object with key \"jokes\"\nreturn {\n  json: {\n    jokes: jokes\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1420,
+        -120
+      ],
+      "id": "76785222-ada0-4f58-b7e1-5b2505eea7db",
+      "name": "add youtube_url, convert back to jokes object"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://tawhid.in/tiny/videos/1000videos/day2/upload_json.php?filename=jokes_youtube_url.json",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.jokes[0] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1620,
+        -120
+      ],
+      "id": "f6b360a6-4538-450e-92c4-a28f595cbfc2",
+      "name": "upload json with yotube url"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "YouTube",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "add youtube_url, convert back to jokes object",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "add youtube_url, convert back to jokes object": {
+      "main": [
+        [
+          {
+            "node": "upload json with yotube url",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c3e52368-019f-46b8-a543-76beda569d22",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "13b539952c9719113db3ce29845755ab93f749a0d22811c6f27eb7e5aeee38da"
+  },
+  "id": "hQ06aJeLAx82t8iK",
+  "tags": []
+}
