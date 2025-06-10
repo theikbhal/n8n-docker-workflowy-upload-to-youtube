@@ -1,0 +1,277 @@
+{
+  "name": "akhlaaq e rasool upload to youtube from json TEXT",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7b0ff08c-ae6d-46c6-86f2-0d8689debdbd",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "http://tawhid.in/tiny/videos/1000videos/json/videos.json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "f67fdbd4-8a89-4cdc-a6ba-77ce3b474074",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items[0].json.videos.map(video => ({ json: video }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        0
+      ],
+      "id": "b6d07d66-520e-4506-ad59-dd277e2d53ea",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "upload",
+        "title": "={{ $json.title }}",
+        "regionCode": "IN",
+        "categoryId": "24",
+        "options": {
+          "description": "={{ $json.description }}",
+          "privacyStatus": "public"
+        }
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        60
+      ],
+      "id": "bc01f858-42da-47d6-bc1a-a79113871637",
+      "name": "YouTube",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "m8yE2ZwMOx7L73ah",
+          "name": "akhlaaq e rasool YouTube account "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.php_server_path }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        620,
+        100
+      ],
+      "id": "fe8a94a9-51f3-4da8-91fd-be19a76fc99d",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        840,
+        60
+      ],
+      "id": "b1de935a-20c6-4ec5-8ade-cf035c147f2c",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1180,
+        -180
+      ],
+      "id": "b4ee8869-25ac-4c4c-919e-5d59f83226cb",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// input: multiple items with JSON like the example\n\nconst videos = items.map(item => {\n  const data = item.json;\n\n  // Add youtube_url from uploadId\n  data.youtube_url = `https://www.youtube.com/watch?v=${data.uploadId}`;\n\n  return data;\n});\n\n// Return wrapped in an object with key \"jokes\"\nreturn {\n  json: {\n    videos: videos\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1420,
+        -120
+      ],
+      "id": "a7d4d681-6609-41aa-8183-8195628f6080",
+      "name": "add youtube_url, convert back to jokes object"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://tawhid.in/tiny/videos/1000videos/upload_json.php?filename=videos_with_youtube_url.json",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.videos }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1620,
+        -120
+      ],
+      "id": "f9522236-0519-49e2-8544-7807f5bfbdfd",
+      "name": "upload json with yotube url"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"videos\": [\n    {\n      \"text\": \"https://sunnah.com/bukhari:108\",\n      \"title\": \"hadis 108 shorts\",\n      \"description\": \"\",\n      \"image_url\": \"\",\n      \"video_path\": \"https://tawhid.in/tiny/videos/1000videos/videos/hadith_108_shorts.mp4\",\n      \"local_path\": \"C:\\\\workspace\\\\scrape_space\\\\albukari\\\\hadith_108_shorts.mp4\",\n      \"php_server_path\": \"https://tawhid.in/tiny/videos/1000videos/videos/hadith_108_shorts.mp4\",\n      \"youtube_url\": \"\"\n    },\n    {\n      \"text\": \"https://sunnah.com/bukhari:109\",\n      \"title\": \"hadis 109 shorts\",\n      \"description\": \"\",\n      \"image_url\": \"\",\n      \"video_path\": \"https://tawhid.in/tiny/videos/1000videos/videos/hadith_109_shorts.mp4\",\n      \"local_path\": \"C:\\\\workspace\\\\scrape_space\\\\albukari\\\\hadith_109_shorts.mp4\",\n      \"php_server_path\": \"https://tawhid.in/tiny/videos/1000videos/videos/hadith_109_shorts.mp4\",\n      \"youtube_url\": \"\"\n    },\n    {\n      \"text\": \"https://sunnah.com/bukhari:110\",\n      \"title\": \"hadis 110 shorts\",\n      \"description\": \"\",\n      \"image_url\": \"\",\n      \"video_path\": \"https://tawhid.in/tiny/videos/1000videos/videos/hadith_110_shorts.mp4\",\n      \"local_path\": \"C:\\\\workspace\\\\scrape_space\\\\albukari\\\\hadith_110_shorts.mp4\",\n      \"php_server_path\": \"https://tawhid.in/tiny/videos/1000videos/videos/hadith_110_shorts.mp4\",\n      \"youtube_url\": \"\"\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        180
+      ],
+      "id": "ebaa15cc-2ea5-43e1-8cb5-88000a546c43",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        []
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "YouTube",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "add youtube_url, convert back to jokes object",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "add youtube_url, convert back to jokes object": {
+      "main": [
+        [
+          {
+            "node": "upload json with yotube url",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ad9047a3-1631-443c-aad9-5a7d732f7d91",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "13b539952c9719113db3ce29845755ab93f749a0d22811c6f27eb7e5aeee38da"
+  },
+  "id": "uzZ0itttnRZqsXIa",
+  "tags": []
+}
