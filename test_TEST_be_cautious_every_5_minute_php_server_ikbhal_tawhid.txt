@@ -1,0 +1,63 @@
+{
+  "name": "test TEST be cautious every 5 minute php server ikbhal tawhid",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "139b2d34-996f-4116-92be-31a505b5dc49",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://tawhid.in/tiny/videos/1000videos/dummy/time.php",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "e90a0f7f-e67f-4bc1-aaeb-a31e2ffbae79",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "8d448942-eb0f-467d-8843-ea6c459c8f8b",
+  "meta": {
+    "instanceId": "13b539952c9719113db3ce29845755ab93f749a0d22811c6f27eb7e5aeee38da"
+  },
+  "id": "zZedbhXfZJS921Xz",
+  "tags": []
+}
